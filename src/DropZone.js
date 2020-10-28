@@ -1,18 +1,21 @@
 import React from 'react'
 
 const DropZone = (props) => {
+
     const {
         isDragInProgress,
         id,
-        className = '',
-        background = 'lightgray'
     } = props
 
     const onDrop = (ev) => {
         ev.preventDefault()
         const data = ev.dataTransfer.getData('text/plain')
         const elementToDrop = document.getElementById(data)
-        ev.target.appendChild(elementToDrop)
+        try {
+            ev.target.appendChild(elementToDrop)
+        } catch (e) {
+            console.error('Unable to append the child')
+        }
     }
 
     const onDragOver = (event) => {
@@ -20,21 +23,12 @@ const DropZone = (props) => {
         event.dataTransfer.dropEffect = 'move'
     }
 
-    const DRAG_IN_PROCESS_STYLE = {
-        padding: '50px',
-        background,
-        border: '2px solid',
-        borderStyle: 'dashed'
-    }
-
     return (
         <div
             id={id}
-            className={className}
+            className={'drop-zone_active'}
             onDrop={onDrop}
-            onDragOver={onDragOver}
-            style={isDragInProgress ? DRAG_IN_PROCESS_STYLE : {}}
-        >
+            onDragOver={onDragOver}>
             {props.children}
         </div>
     )

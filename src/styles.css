@@ -2,3 +2,14 @@
     font-family: sans-serif;
     text-align: center;
 }
+
+.drop-zone {
+
+}
+
+.drop-zone_active {
+    padding: 50px;
+    margin: 1px;
+    background: whitesmoke;
+    border: 1px dashed;
+}

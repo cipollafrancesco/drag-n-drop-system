@@ -1,40 +1,33 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import './styles.css'
-import DropZone from './DropZone'
-import DraggableItem from './DraggableItem'
+import DragAndDropContainer from './DragAndDropContainer'
 
 const DEFAULT_ORDER_HIERARCHY = {
     'dropzone-1': ['draggable-1'],
     'dropzone-2': ['draggable-2'],
     'dropzone-3': ['draggable-3'],
+    'dropzone-4': ['draggable-4'],
+    'dropzone-5': [],
+    'dropzone-6': [],
+    'dropzone-7': [],
+    'dropzone-8': [],
 }
 
-const ORDER_LOCAL_STORAGE_KEY = 'preferences@order-hierarchy'
+const Circle = ({children, background}) => (
+    <div className="d-flex align-items-center justify-content-center text-white"
+         style={{height: 100, background}}>
+        {children}
+    </div>
+)
+
+const MAP_DRAGGABLE_ID_TO_COMPONENT = {
+    'draggable-1': <Circle background="#283593"> draggable-1 </Circle>,
+    'draggable-2': <Circle background="#455A64"> draggable-2 </Circle>,
+    'draggable-3': <Circle background="#9C27B0"> draggable-3 </Circle>,
+    'draggable-4': <Circle background="#880E4F"> draggable-4 </Circle>,
+}
 
 export default function App() {
-
-    // GETTING PREFERENCES FROM LOCAL STORAGE
-    const localStoragePreferences = useMemo(() => JSON.parse(localStorage.getItem(ORDER_LOCAL_STORAGE_KEY)), [])
-    let orderHierarchy = localStoragePreferences || DEFAULT_ORDER_HIERARCHY
-
-    /**
-     * HANDLE SAVE HIERARCHY
-     */
-    const saveHierarchy = () => {
-        orderHierarchy = Object.keys(orderHierarchy).reduce((savedOrder, dropZoneId) => {
-            const childrenIds = [...document.getElementById(dropZoneId).children].map(el => el.id)
-            return ({
-                ...savedOrder,
-                [dropZoneId]: childrenIds.length ? childrenIds : []
-            })
-        }, {})
-
-        console.log('>>> UPDATED ORDER', orderHierarchy)
-
-        // SAVE ON LOCAL STORAGE
-        localStorage.setItem(ORDER_LOCAL_STORAGE_KEY, JSON.stringify(orderHierarchy))
-    }
-
     return (
         <div className="App">
 
@@ -42,28 +35,17 @@ export default function App() {
                 <strong> Drag 'n Drop System </strong>
             </h1>
 
-            <div className="d-flex flex-row mt-4">
-                {
-                    Object.keys(orderHierarchy).map(dropZoneId =>
-                        <DropZone key={dropZoneId} id={dropZoneId} className="w-50" isDragInProgress={true}>
-                            {
-                                orderHierarchy[dropZoneId].map(draggableItemId => (
-                                        <DraggableItem key={draggableItemId}
-                                                       id={draggableItemId}>
-                                            Draggable: {draggableItemId}
-                                        </DraggableItem>
-                                    )
-                                )
-                            }
-                        </DropZone>
-                    )
-                }
-            </div>
+            {/* FIRST ROW */}
+            <div className="mt-4"
+                 style={{
+                     display: 'grid',
+                     gridTemplateColumns: '33% 33% 33%'
+                 }}>
 
+                <DragAndDropContainer defaultOrderHierarchy={DEFAULT_ORDER_HIERARCHY}
+                                      draggableIdToComponentMapper={MAP_DRAGGABLE_ID_TO_COMPONENT}
+                />
 
-            {/* SALVA ORDINE */}
-            <div className="w-100 mt-4">
-                <button onClick={saveHierarchy}> Save hierarchy</button>
             </div>
 
         </div>
